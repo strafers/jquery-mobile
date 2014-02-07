@@ -2,6 +2,8 @@ module.exports = function( grunt ) {
 	"use strict";
 
 	var _ = require( "underscore" ),
+		cheerio = require( "cheerio" ),
+		domino = require( "domino" ),
 
 		replaceCombinedCssReference = function( content, processedName ) {
 			return content.replace( /\.\.\/css\//, "css/" )
@@ -393,7 +395,7 @@ module.exports = function( grunt ) {
 						var processedName = grunt.config.process( name + "<%= versionSuffix %>" );
 						content = content.replace( /_assets\/js\/">/gi, "_assets/js/index.js\">" );
 						content = content.replace( /\.\.\/external\/jquery\//gi, "js/" );
-						content = content.replace( /\.\.\/js\//gi, "js/" );
+						content = content.replace( /\.\.\/js\/\"/gi, "js/\"" );
 						content = content.replace( /js\/"/gi, "js/" + processedName + ".min.js\"" );
 						content = replaceCombinedCssReference( content, processedName );
 						content = content.replace( /^\s*<\?php include\(\s*['"]([^'"]+)['"].*$/gmi,
@@ -435,15 +437,43 @@ module.exports = function( grunt ) {
 			},
 			"demos.backbone": {
 				options: {
-					processContent: function( content /*, srcPath */ ) {
-						var processedName = grunt.config.process( name + "<%= versionSuffix %>" );
-						content = content.replace( /"jquery": "\.\.\/\.\.\/\.\.\/js\/jquery"/,
-								"\"jquery\": \"../../js/jquery\"" );
-						content = replaceCombinedCssReference( content, processedName );
+					processContent: function( content, srcPath ) {
+						var $,
+							processedName = grunt.config.process( name + "<%= versionSuffix %>" );
 
-						// Update dependency to jquery.mobile claimed by jquerymobile.js
-						content = content.replace( /\[ "\.\.\/\.\.\/js\/\?noext" \]/,
-							"[ \"../../../" + processedName + "\" ]" );
+						if ( /\.html$/.test( srcPath ) ) {
+
+							content = replaceCombinedCssReference( content, processedName );
+
+							$ = cheerio.load( content );
+
+							$( "script" ).each( function ( idx, el ) {
+								var $el = $( el );
+								if ( /requirejs\.config\.js$/.test( $el.attr( "src" ) ) ) {
+
+									// Get rid of the requirejs.config.js script tag since we're using the built bundle
+									$el.remove();
+								} else if ( /require.js$/.test( $el.attr( "src" ) ) ) {
+
+									// Use the rawgithub.com version for requirejs
+									$el.attr( "src",
+										"//rawgithub.com/jrburke/requirejs/" +
+										grunt.template.process( "<%= pkg.devDependencies.requirejs %>" ) +
+										"/require.js" );
+								}
+							});
+
+							// write out newly created file contents
+							content = $.html();
+						} else if ( /\.js$/.test( srcPath ) ) {
+
+							// Redifines paths for compiled demos
+							content = content.replace( /baseUrl:.*$/m, "baseUrl: \"../js\"," );
+							content = content.replace( /\.\.\/external\/jquery\//, "" );
+							content = content.replace( /jquery\.mobile/, processedName );
+							content = content.replace( /"backbone-requirejs-demos".*$/m, "\"backbone-requirejs-demos\": \"../backbone-requirejs/js\"" )
+						}
+
 						return content;
 					}
 				},
