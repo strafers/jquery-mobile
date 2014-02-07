@@ -470,7 +470,7 @@ module.exports = function( grunt ) {
 							content = content.replace( /baseUrl:.*$/m, "baseUrl: \"../js\"," );
 							content = content.replace( /\.\.\/external\/jquery\//, "" );
 							content = content.replace( /jquery\.mobile/, processedName );
-							content = content.replace( /"backbone-requirejs-demos".*$/m, "\"backbone-requirejs-demos\": \"../backbone-requirejs/js\"" )
+							content = content.replace( /"backbone-requirejs-demos".*$/m, "\"backbone-requirejs-demos\": \"../backbone-requirejs/js\"" );
 						}
 
 						return content;
