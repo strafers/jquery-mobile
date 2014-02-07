@@ -3,7 +3,6 @@ module.exports = function( grunt ) {
 
 	var _ = require( "underscore" ),
 		cheerio = require( "cheerio" ),
-		domino = require( "domino" ),
 
 		replaceCombinedCssReference = function( content, processedName ) {
 			return content.replace( /\.\.\/css\//, "css/" )
