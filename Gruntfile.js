@@ -446,16 +446,16 @@ module.exports = function( grunt ) {
 
 							$ = cheerio.load( content );
 
-							$( "script" ).each( function ( idx, el ) {
-								var $el = $( el );
-								if ( /requirejs\.config\.js$/.test( $el.attr( "src" ) ) ) {
+							$( "script" ).each( function ( idx, element ) {
+								var $element = $( element );
+								if ( /requirejs\.config\.js$/.test( $element.attr( "src" ) ) ) {
 
 									// Get rid of the requirejs.config.js script tag since we're using the built bundle
-									$el.remove();
-								} else if ( /require.js$/.test( $el.attr( "src" ) ) ) {
+									$element.remove();
+								} else if ( /require.js$/.test( $element.attr( "src" ) ) ) {
 
 									// Use the rawgithub.com version for requirejs
-									$el.attr( "src",
+									$element.attr( "src",
 										"//rawgithub.com/jrburke/requirejs/" +
 										grunt.template.process( "<%= pkg.devDependencies.requirejs %>" ) +
 										"/require.js" );
@@ -470,7 +470,9 @@ module.exports = function( grunt ) {
 							content = content.replace( /baseUrl:.*$/m, "baseUrl: \"../js\"," );
 							content = content.replace( /\.\.\/external\/jquery\//, "" );
 							content = content.replace( /jquery\.mobile/, processedName );
-							content = content.replace( /"backbone-requirejs-demos".*$/m, "\"backbone-requirejs-demos\": \"../backbone-requirejs/js\"" );
+							content = content.replace(
+								/"backbone-requirejs-demos".*$/m,
+								"\"backbone-requirejs-demos\": \"../backbone-requirejs/js\"" );
 						}
 
 						return content;

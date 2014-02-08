@@ -20,10 +20,10 @@ require.config( {
 
 		"backbone": {
 			"deps": [ "underscore", "jquery" ],
-			"exports": "Backbone"  //attaches "Backbone" to the window object
+			"exports": "Backbone"
 		}
 
-	} // end Shim Configuration
+	}
 
 });
 
@@ -35,8 +35,10 @@ require([
 ], function ( $, Backbone, Mobile ) {
 
 	$( document ).on( "mobileinit",
+
 		// Set up the "mobileinit" handler before requiring jQuery Mobile's module
 		function () {
+
 			// Prevents all anchor click handling including the addition of active button state and alternate link bluring.
 			$.mobile.linkBindingEnabled = false;
 
@@ -46,7 +48,8 @@ require([
 	)
 
 	require( [ "jquerymobile" ], function () {
+
 		// Instantiates a new Backbone.js Mobile Router
 		this.router = new Mobile();
-	} );
-} );
+	});
+});
