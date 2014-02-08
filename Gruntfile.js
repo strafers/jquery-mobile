@@ -447,15 +447,15 @@ module.exports = function( grunt ) {
 							$ = cheerio.load( content );
 
 							$( "script" ).each( function ( idx, element ) {
-								var $element = $( element );
-								if ( /requirejs\.config\.js$/.test( $element.attr( "src" ) ) ) {
+								var script = $( element );
+								if ( /requirejs\.config\.js$/.test( script.attr( "src" ) ) ) {
 
 									// Get rid of the requirejs.config.js script tag since we're using the built bundle
-									$element.remove();
-								} else if ( /require.js$/.test( $element.attr( "src" ) ) ) {
+									script.remove();
+								} else if ( /require.js$/.test( script.attr( "src" ) ) ) {
 
 									// Use the rawgithub.com version for requirejs
-									$element.attr( "src",
+									script.attr( "src",
 										"//rawgithub.com/jrburke/requirejs/" +
 										grunt.template.process( "<%= pkg.devDependencies.requirejs %>" ) +
 										"/require.js" );
