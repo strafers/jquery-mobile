@@ -182,14 +182,93 @@ $.widget( "mobile.checkboxradio", $.extend( {
 		});
 	},
 
-	//returns either a set of radios with the same name attribute, or a single checkbox
+	// Returns those radio buttons that are supposed to be in the same group as
+	// this radio button. In the case of a checkbox or a radio lacking a name
+	// attribute, it returns this.element.
 	_getInputSet: function() {
-		if ( this.inputtype === "checkbox" ) {
-			return this.element;
+		var formParent, inputSelector, thisPage, thisPageSelector,
+			thisElement = this.element,
+			formId = thisElement.attr( "form" ),
+			outsideForm = false,
+			returnValue = thisElement,
+			name = thisElement[ 0 ].name;
+
+		// We only look for group members if this widget is not a checkbox or
+		// an unnamed radio button
+		if ( !( this.inputtype === "checkbox" || !name ) ) {
+
+			inputSelector = "input[type='radio'][name='" + name + "']";
+
+			thisPageSelector = ":jqmData(role='page'), " +
+				":jqmData(role='dialog')" +
+				( $.mobile.page ? ", :mobile-page" : "" ) +
+				", body";
+			thisPage = thisElement.closest( thisPageSelector );
+
+			if ( formId ) {
+
+				// This element has a form attribute. Let's find the form.
+				formParent = thisPage.find( "#" + formId );
+			} else {
+
+				// Are we inside a form?
+				// We don't use .closest() here because we want the outermost
+				// form and some browsers may fail to discard any nested forms.
+				formParent = thisElement.parents( "form" ).last();
+			}
+
+			if ( formParent.length > 0 ) {
+				formId = formParent.attr( "id" );
+
+				// If the form has an ID, append those inputs that may be
+				// scattered throughout the page, but belonging to the parent
+				// form
+				if ( formId ) {
+					returnValue = thisPage
+						.find( inputSelector + "[form='" + formId + "']" )
+						.add( returnValue );
+				}
+			} else {
+				outsideForm = true;
+				formParent = thisPage;
+			}
+
+			returnValue = formParent
+				.find( inputSelector )
+				.filter( function() {
+					var formAttribute, otherRadio;
+
+					if ( this === thisElement[ 0 ] ) {
+						return true;
+					}
+
+					otherRadio = $( this );
+					formAttribute = otherRadio.attr( "form" );
+
+					return outsideForm ?
+
+						// If this.element is outside of a form then the other
+						// radio must not have a form attribute in order to be
+						// admitted to this group
+						( !formAttribute &&
+
+							// If it doesn't have a form attribute, it must
+							// still have the same parent form
+							otherRadio.closest( "form, " +
+								thisPageSelector )[ 0 ] ===
+									formParent[ 0 ] ):
+
+						// If this.element is inside a form then the other
+						// radio is part of this group if it either doesn't
+						// have a form attribute, or if its form attribute is
+						// equal to the formId (including an undefined formId)
+						( !formAttribute ) ||
+							( formAttribute === formId );
+				})
+				.add( returnValue );
 		}
 
-		return this.element.closest( "form, :jqmData(role='page'), :jqmData(role='dialog')" )
-			.find( "input[name='" + this.element[ 0 ].name + "'][type='" + this.inputtype + "']" );
+		return returnValue;
 	},
 
 	_updateAll: function() {
