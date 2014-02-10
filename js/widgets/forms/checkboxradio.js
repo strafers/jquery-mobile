@@ -10,11 +10,14 @@
 //>>css.theme: ../css/themes/default/jquery.mobile.theme.css
 
 define( [ "jquery",
+	"../../navigation/path",
 	"../../jquery.mobile.core",
 	"../../jquery.mobile.widget",
 	"./reset" ], function( jQuery ) {
 //>>excludeEnd("jqmBuildExclude");
 (function( $, undefined ) {
+
+var escapeId = $.mobile.path.hashToSelector;
 
 $.widget( "mobile.checkboxradio", $.extend( {
 
@@ -42,7 +45,7 @@ $.widget( "mobile.checkboxradio", $.extend( {
 				input
 					.closest( "form, fieldset, :jqmData(role='page'), :jqmData(role='dialog')" )
 					.find( "label" )
-					.filter( "[for='" + $.mobile.path.hashToSelector( input[0].id ) + "']" )
+					.filter( "[for='" + escapeId( input[0].id ) + "']" )
 					.first(),
 			inputtype = input[0].type,
 			checkedClass = "ui-" + inputtype + "-on",
@@ -186,9 +189,8 @@ $.widget( "mobile.checkboxradio", $.extend( {
 	// this radio button. In the case of a checkbox or a radio lacking a name
 	// attribute, it returns this.element.
 	_getInputSet: function() {
-		var formParent, inputSelector, thisPage, thisPageSelector,
+		var formParent, inputSelector, thisPage, thisPageSelector, formId,
 			thisElement = this.element,
-			formId = thisElement.attr( "form" ),
 			outsideForm = false,
 			returnValue = thisElement,
 			name = thisElement[ 0 ].name;
@@ -198,17 +200,18 @@ $.widget( "mobile.checkboxradio", $.extend( {
 		if ( !( this.inputtype === "checkbox" || !name ) ) {
 
 			inputSelector = "input[type='radio'][name='" + name + "']";
-
 			thisPageSelector = ":jqmData(role='page'), " +
 				":jqmData(role='dialog')" +
 				( $.mobile.page ? ", :mobile-page" : "" ) +
 				", body";
 			thisPage = thisElement.closest( thisPageSelector );
+			formId = thisElement.attr( "form" );
 
+			// Establish formParent
 			if ( formId ) {
 
 				// This element has a form attribute. Let's find the form.
-				formParent = thisPage.find( "#" + formId );
+				formParent = thisPage.find( "#" + escapeId( formId ) );
 			} else {
 
 				// Are we inside a form?
@@ -225,7 +228,7 @@ $.widget( "mobile.checkboxradio", $.extend( {
 				// form
 				if ( formId ) {
 					returnValue = thisPage
-						.find( inputSelector + "[form='" + formId + "']" )
+						.find( inputSelector + "[form='" + escapeId( formId ) + "']" )
 						.add( returnValue );
 				}
 			} else {
