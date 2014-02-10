@@ -3,16 +3,17 @@
 $.mobile.ns = "nstest-";
 
 test( "Radio groups are correctly identified", function() {
-	var groups = {
-		"#radio1": "#radio1",
-		"#radio2": "#radio2,#radio3,#radio6",
-		"#radio3": "#radio2,#radio3,#radio6",
-		"#radio6": "#radio2,#radio3,#radio6",
-		"#radio4": "#radio4,#radio7",
-		"#radio7": "#radio4,#radio7",
-		"#radio5": "#radio5",
-		"#radio8": "#radio8"
-	};
+	var theDocument = $( document );
+		groups = {
+			"#radio\\:1": "#radio\\:1",
+			"#radio\\:2": "#radio\\:2,#radio\\:3,#radio\\:6",
+			"#radio\\:3": "#radio\\:2,#radio\\:3,#radio\\:6",
+			"#radio\\:6": "#radio\\:2,#radio\\:3,#radio\\:6",
+			"#radio\\:4": "#radio\\:4,#radio\\:7",
+			"#radio\\:7": "#radio\\:4,#radio\\:7",
+			"#radio\\:5": "#radio\\:5",
+			"#radio\\:8": "#radio\\:8"
+		};
 
 	$.each( groups, function( index, value ) {
 		var result,
@@ -22,7 +23,7 @@ test( "Radio groups are correctly identified", function() {
 		result = $.mobile.checkboxradio.prototype._getInputSet.call({
 			element: radio,
 			inputtype: "radio",
-			document: $( document )
+			document: theDocument
 		});
 		deepEqual( group.length, result.length,
 			index + ": length of group is correct" );

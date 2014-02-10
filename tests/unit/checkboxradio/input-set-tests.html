@@ -30,21 +30,21 @@
 	<div id="qunit"></div>
 
 	<div data-nstest-role="page">
-		<label>Radio<input id="radio1" type="radio" name="group1"></label>
-		<form id="the-form">
-			<label>Radio<input id="radio2" type="radio" name="group1"></label>
-			<label>Radio<input id="radio7" type="radio" name="group1" form="the-other-form"></label>
+		<label>Radio<input id="radio:1" type="radio" name="group1"></label>
+		<form id="the-[form]">
+			<label>Radio<input id="radio:2" type="radio" name="group1"></label>
+			<label>Radio<input id="radio:7" type="radio" name="group1" form="the-'other'-form"></label>
 		</form>
-		<label>Radio<input id="radio3" type="radio" name="group1" form="the-form"></label>
-		<form id="the-other-form">
-			<label>Radio<input id="radio6" type="radio" name="group1" form="the-form"></label>
-			<label>Radio<input id="radio4" type="radio" name="group1"></label>
+		<label>Radio<input id="radio:3" type="radio" name="group1" form="the-[form]"></label>
+		<form id="the-'other'-form">
+			<label>Radio<input id="radio:6" type="radio" name="group1" form="the-[form]"></label>
+			<label>Radio<input id="radio:4" type="radio" name="group1"></label>
 		</form>
 
 		<!-- radio5 (below) is not supposed to have a name -->
-		<label>Radio<input id="radio5" type="radio"></label>
+		<label>Radio<input id="radio:5" type="radio"></label>
 	</div>
 
-	<label>Radio<input id="radio8" type="radio" name="group1"></label>
+	<label>Radio<input id="radio:8" type="radio" name="group1"></label>
 </body>
 </html>
