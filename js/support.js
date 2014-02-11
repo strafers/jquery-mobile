@@ -2,7 +2,7 @@
 //>>description: Assorted tests to qualify browsers by detecting features
 //>>label: Support Tests
 //>>group: Core
-define( [  "jquery", "./core", "./media", "./support.touch", "./support.orientation" ], function( jQuery ) {
+define( [  "jquery", "./core", "./media", "./support/touch", "./support/orientation" ], function( jQuery ) {
 //>>excludeEnd("jqmBuildExclude");
 (function( $, undefined ) {
 
